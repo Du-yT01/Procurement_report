@@ -1,0 +1,1196 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Procurement Price Analysis Report</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Phosphor Icons -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <!-- ApexCharts -->
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+
+    <style>
+        :root {
+            /* Power BI inspired color palette */
+            --bg-color: #f3f2f1;
+            --sidebar-bg: #252423;
+            --sidebar-hover: #3b3a39;
+            --sidebar-text: #ffffff;
+            --card-bg: #ffffff;
+            --text-primary: #323130;
+            --text-secondary: #605e5c;
+            --border-color: #edebe9;
+            --accent: #118dff;
+            --accent-hover: #0078d4;
+            --success: #107c10;
+            --success-light: #dff6dd;
+            --danger: #d13438;
+            --danger-light: #fde7e9;
+            --warning: #ffaa44;
+
+            --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 4px 8px rgba(0, 0, 0, 0.08);
+            --radius: 6px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-primary);
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* Sidebar Navigation */
+        .sidebar {
+            width: 250px;
+            background-color: var(--sidebar-bg);
+            color: var(--sidebar-text);
+            display: flex;
+            flex-direction: column;
+            transition: all 0.3s ease;
+            z-index: 100;
+        }
+
+        .sidebar-header {
+            padding: 24px 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .sidebar-header i {
+            font-size: 24px;
+            color: var(--accent);
+        }
+
+        .sidebar-header h2 {
+            font-size: 16px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            line-height: 1.3;
+        }
+
+        .nav-menu {
+            display: flex;
+            flex-direction: column;
+            padding: 16px 0;
+            flex: 1;
+        }
+
+        .nav-item {
+            padding: 14px 24px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            color: rgba(255, 255, 255, 0.8);
+            border-left: 3px solid transparent;
+        }
+
+        .nav-item:hover {
+            background-color: var(--sidebar-hover);
+            color: var(--sidebar-text);
+        }
+
+        .nav-item.active {
+            background-color: var(--sidebar-hover);
+            color: var(--sidebar-text);
+            border-left-color: var(--accent);
+            font-weight: 500;
+        }
+
+        .nav-item i {
+            font-size: 20px;
+        }
+
+        .sidebar-footer {
+            padding: 20px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.5);
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        /* Main Content Area */
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+        }
+
+        /* Header (Filters) */
+        .top-header {
+            background-color: var(--card-bg);
+            padding: 16px 32px;
+            box-shadow: var(--shadow-sm);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 10;
+        }
+
+        .page-title {
+            font-size: 20px;
+            font-weight: 600;
+        }
+
+        .filters {
+            display: flex;
+            gap: 16px;
+        }
+
+        .filter-group {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .filter-group label {
+            font-size: 13px;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        .filter-select {
+            padding: 8px 12px;
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius);
+            font-size: 14px;
+            color: var(--text-primary);
+            background-color: #faf9f8;
+            outline: none;
+            cursor: pointer;
+            min-width: 140px;
+        }
+
+        .filter-select:focus {
+            border-color: var(--accent);
+        }
+
+        /* Dashboard Pages */
+        .page-container {
+            padding: 24px 32px;
+            display: none;
+            animation: fadeIn 0.4s ease-out;
+        }
+
+        .page-container.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Grid Layouts */
+        .kpi-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .kpi-grid-4 {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .charts-grid-top {
+            display: grid;
+            grid-template-columns: 2fr 3fr;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .charts-grid-bottom {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 20px;
+        }
+
+        .charts-grid-half {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        /* Components */
+        .card {
+            background-color: var(--card-bg);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow-sm);
+            padding: 20px;
+            border: 1px solid var(--border-color);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .card:hover {
+            box-shadow: var(--shadow-md);
+        }
+
+        .kpi-card {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .kpi-card::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            background-color: var(--accent);
+            border-radius: var(--radius) 0 0 var(--radius);
+        }
+
+        .kpi-title {
+            font-size: 13px;
+            color: var(--text-secondary);
+            font-weight: 500;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .kpi-value {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .kpi-trend {
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-weight: 500;
+            margin-top: 4px;
+        }
+
+        .trend-up {
+            color: var(--danger);
+        }
+
+        .trend-down {
+            color: var(--success);
+        }
+
+        .trend-neutral {
+            color: var(--text-secondary);
+        }
+
+        .trend-up-good {
+            color: var(--success);
+        }
+
+        .kpi-badge {
+            background-color: var(--success-light);
+            color: var(--success);
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .chart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .chart-title {
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .chart-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .chart-action-btn {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            cursor: pointer;
+            padding: 4px;
+            border-radius: 4px;
+            transition: background 0.2s;
+        }
+
+        .chart-action-btn:hover {
+            background: #f0f0f0;
+            color: var(--text-primary);
+        }
+
+        .chart-container {
+            width: 100%;
+            height: 300px;
+        }
+
+        .chart-container.small {
+            height: 250px;
+        }
+
+        /* Material Insight Highlight */
+        .insight-box {
+            background: linear-gradient(to right, rgba(17, 141, 255, 0.05), rgba(17, 141, 255, 0.02));
+            border-left: 4px solid var(--accent);
+            padding: 16px;
+            border-radius: 0 var(--radius) var(--radius) 0;
+            margin-bottom: 24px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .insight-icon {
+            width: 40px;
+            height: 40px;
+            background-color: var(--accent);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            flex-shrink: 0;
+        }
+
+        .insight-content p {
+            margin: 0;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .insight-content strong {
+            color: var(--text-primary);
+        }
+
+        /* Data Table (Matrix) */
+        .table-container {
+            width: 100%;
+            overflow-x: auto;
+            margin-top: 24px;
+            margin-bottom: 24px;
+        }
+
+        .data-matrix {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+        }
+
+        .data-matrix th {
+            background-color: #f3f2f1;
+            color: var(--text-primary);
+            font-weight: 600;
+            text-align: left;
+            padding: 12px 16px;
+            border-bottom: 2px solid var(--border-color);
+            border-top: 1px solid var(--border-color);
+            white-space: nowrap;
+        }
+
+        .data-matrix th.text-right,
+        .data-matrix td.text-right {
+            text-align: right;
+        }
+
+        .data-matrix td {
+            padding: 12px 16px;
+            border-bottom: 1px solid var(--border-color);
+            color: var(--text-primary);
+        }
+
+        .data-matrix tr.level-1 {
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .data-matrix tr.level-1:hover td {
+            background-color: #f0f0f0;
+        }
+
+        .data-matrix tr.level-2 {
+            display: none;
+            background-color: #faf9f8;
+        }
+
+        .data-matrix tr.level-2.show {
+            display: table-row;
+        }
+
+        .data-matrix tr.level-2 td:first-child {
+            padding-left: 36px;
+            color: var(--text-secondary);
+            font-size: 13px;
+            border-left: 3px solid var(--accent);
+        }
+
+        .data-matrix tr.level-2 td {
+            border-bottom: 1px dashed var(--border-color);
+        }
+
+        .expand-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 20px;
+            margin-right: 8px;
+            color: var(--accent);
+            transition: transform 0.2s;
+        }
+
+        tr.expanded .expand-icon {
+            transform: rotate(90deg);
+        }
+
+        /* Responsive */
+        @media (max-width: 1400px) {
+            .kpi-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+
+            .charts-grid-bottom {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        @media (max-width: 1100px) {
+            .charts-grid-top {
+                grid-template-columns: 1fr;
+            }
+
+            .kpi-grid-4 {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <i class="ph-fill ph-chart-bar"></i>
+            <h2>Procurement<br>Intelligence</h2>
+        </div>
+        <div class="nav-menu">
+            <div class="nav-item active" onclick="switchPage('page1', this)">
+                <i class="ph ph-squares-four"></i>
+                <span>Tổng quan giá NVL</span>
+            </div>
+            <div class="nav-item" onclick="switchPage('page2', this)">
+                <i class="ph ph-magnifying-glass-plus"></i>
+                <span>Phân tích chi tiết NVL</span>
+            </div>
+
+        </div>
+        <div class="sidebar-footer">
+            <p>Last updated: Mar 10, 2026</p>
+            <p>Data Status: Live Sync</p>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Global Header -->
+        <header class="top-header">
+            <h1 class="page-title" id="pageTitle">Procurement Price Overview</h1>
+            <div class="filters">
+                <div class="filter-group">
+                    <label>Tháng báo cáo:</label>
+                    <select class="filter-select">
+                        <option>Tháng 3, 2026</option>
+                        <option>Tháng 2, 2026</option>
+                        <option>Tháng 1, 2026</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label>Nhóm NVL:</label>
+                    <select class="filter-select">
+                        <option>Tất cả nhóm</option>
+                        <option>Kim loại (Metals)</option>
+                        <option>Nhựa (Plastics)</option>
+                        <option>Hóa chất (Chemicals)</option>
+                    </select>
+                </div>
+            </div>
+        </header>
+
+        <!-- PAGE 1: OVERVIEW -->
+        <div id="page1" class="page-container active">
+
+
+
+            <div class="kpi-grid">
+                <div class="card kpi-card">
+                    <div class="kpi-title">
+                        Số NVL có báo giá
+                        <i class="ph ph-package"></i>
+                    </div>
+                    <div class="kpi-value">154</div>
+                    <div class="kpi-trend trend-up-good">
+                        <i class="ph-bold ph-trend-up"></i>
+                        <span>+12 so với tháng trước</span>
+                    </div>
+                </div>
+
+                <div class="card kpi-card" style="--accent: var(--warning)">
+                    <div class="kpi-title">
+                        Số nhà cung cấp tham gia
+                        <i class="ph ph-buildings"></i>
+                    </div>
+                    <div class="kpi-value">32</div>
+                    <div class="kpi-trend trend-neutral">
+                        <i class="ph-bold ph-minus"></i>
+                        <span>Không đổi so với T2</span>
+                    </div>
+                </div>
+
+                <div class="card kpi-card" style="--accent: #8e24aa">
+                    <div class="kpi-title">
+                        Tổng số lượt báo giá
+                        <i class="ph ph-receipt"></i>
+                    </div>
+                    <div class="kpi-value">450</div>
+                    <div class="kpi-trend trend-up-good">
+                        <i class="ph-bold ph-trend-up"></i>
+                        <span>+5% v/v tháng trước</span>
+                    </div>
+                </div>
+
+                <div class="card kpi-card" style="--accent: #00897b">
+                    <div class="kpi-title">
+                        Trung bình NCC / NVL
+                        <i class="ph ph-scales"></i>
+                    </div>
+                    <div class="kpi-value">2.9</div>
+                    <div class="kpi-trend trend-up-good">
+                        <i class="ph-bold ph-trend-up"></i>
+                        <span>Mức độ cạnh tranh được cải thiện</span>
+                    </div>
+                </div>
+
+                <div class="card kpi-card" style="--accent: #d32f2f">
+                    <div class="kpi-title">
+                        % NVL có ≥ 3 NCC
+                        <i class="ph ph-shield-check"></i>
+                    </div>
+                    <div class="kpi-value">68%</div>
+                    <div class="kpi-trend">
+                        <span class="kpi-badge">Low Risk</span>
+                        <span style="color:var(--text-secondary); font-size: 11px; margin-left: 4px;">Giảm rủi ro phụ
+                            thuộc</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="charts-grid-top">
+                <div class="card">
+                    <div class="chart-header">
+                        <div class="chart-title">Mức độ cạnh tranh (Phân bố số NCC báo giá / NVL)</div>
+                        <div class="chart-actions">
+                            <button class="chart-action-btn"><i class="ph ph-dots-three"></i></button>
+                        </div>
+                    </div>
+                    <div id="chartSupplierDistribution" class="chart-container"></div>
+                </div>
+
+                <div class="card">
+                    <div class="chart-header">
+                        <div class="chart-title">Top Nhà cung cấp báo giá nhiều nhất</div>
+                        <div class="chart-actions">
+                            <button class="chart-action-btn"><i class="ph ph-dots-three"></i></button>
+                        </div>
+                    </div>
+                    <div id="chartTopSuppliers" class="chart-container"></div>
+                </div>
+            </div>
+
+            <div class="charts-grid-bottom">
+                <div class="card">
+                    <div class="chart-header">
+                        <div class="chart-title">Biến động giá chung v/v tháng trước</div>
+                        <div class="chart-actions">
+                            <button class="chart-action-btn"><i class="ph ph-dots-three"></i></button>
+                        </div>
+                    </div>
+                    <div id="chartPriceStatus" class="chart-container small"></div>
+                </div>
+
+                <div class="card">
+                    <div class="chart-header">
+                        <div class="chart-title">Top 5 NVL TĂNG giá mạnh nhất</div>
+                        <div class="chart-actions">
+                            <button class="chart-action-btn"><i class="ph ph-dots-three"></i></button>
+                        </div>
+                    </div>
+                    <div id="chartTopIncrease" class="chart-container small"></div>
+                </div>
+
+                <div class="card">
+                    <div class="chart-header">
+                        <div class="chart-title">Top 5 NVL GIẢM giá mạnh nhất</div>
+                        <div class="chart-actions">
+                            <button class="chart-action-btn"><i class="ph ph-dots-three"></i></button>
+                        </div>
+                    </div>
+                    <div id="chartTopDecrease" class="chart-container small"></div>
+                </div>
+            </div>
+
+            <div class="card table-container">
+                <div class="chart-header">
+                    <div class="chart-title">Chi tiết Báo giá theo Nguyên vật liệu</div>
+                    <div class="chart-actions">
+                        <button class="chart-action-btn"><i class="ph ph-export"></i></button>
+                        <button class="chart-action-btn"><i class="ph ph-dots-three"></i></button>
+                    </div>
+                </div>
+                <table class="data-matrix">
+                    <thead>
+                        <tr>
+                            <th>Tên nguyên vật liệu</th>
+                            <th class="text-right">Số lượng NCC</th>
+                            <th class="text-right">Giá thấp nhất (Lịch sử)</th>
+                            <th class="text-right">Giá cao nhất (Lịch sử)</th>
+                            <th class="text-right">Giá hiện tại (Trung bình)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Material: Aluminum -->
+                        <tr class="level-1" onclick="toggleRow('row-al001', this)">
+                            <td><span class="expand-icon"><i class="ph-bold ph-caret-right"></i></span> Aluminum Grade A
+                                (AL-001)</td>
+                            <td class="text-right">4</td>
+                            <td class="text-right">$1,150</td>
+                            <td class="text-right">$1,480</td>
+                            <td class="text-right" style="font-weight: 600; color: var(--accent);">$1,310 <span
+                                    style="font-size: 11px; color: var(--danger); margin-left: 4px;"><i
+                                        class="ph-bold ph-trend-up"></i> +14%</span></td>
+                        </tr>
+                        <tr class="level-2 row-al001">
+                            <td>Global Metal Corp</td>
+                            <td class="text-right">-</td>
+                            <td class="text-right">$1,150</td>
+                            <td class="text-right">$1,300</td>
+                            <td class="text-right">$1,200</td>
+                        </tr>
+                        <tr class="level-2 row-al001">
+                            <td>Asia Supply</td>
+                            <td class="text-right">-</td>
+                            <td class="text-right">$1,210</td>
+                            <td class="text-right">$1,350</td>
+                            <td class="text-right">$1,250</td>
+                        </tr>
+                        <tr class="level-2 row-al001">
+                            <td>EuroMat Ltd</td>
+                            <td class="text-right">-</td>
+                            <td class="text-right">$1,300</td>
+                            <td class="text-right">$1,450</td>
+                            <td class="text-right">$1,340</td>
+                        </tr>
+                        <tr class="level-2 row-al001">
+                            <td>Apex Supply</td>
+                            <td class="text-right">-</td>
+                            <td class="text-right">$1,380</td>
+                            <td class="text-right">$1,480</td>
+                            <td class="text-right">$1,450</td>
+                        </tr>
+
+                        <!-- Material: Copper Wire -->
+                        <tr class="level-1" onclick="toggleRow('row-cu052', this)">
+                            <td><span class="expand-icon"><i class="ph-bold ph-caret-right"></i></span> Copper Wire 2mm
+                                (CU-052)</td>
+                            <td class="text-right">3</td>
+                            <td class="text-right">$2,400</td>
+                            <td class="text-right">$2,750</td>
+                            <td class="text-right" style="font-weight: 600; color: var(--accent);">$2,620 <span
+                                    style="font-size: 11px; color: var(--danger); margin-left: 4px;"><i
+                                        class="ph-bold ph-trend-up"></i> +8%</span></td>
+                        </tr>
+                        <tr class="level-2 row-cu052">
+                            <td>Global Metal Corp</td>
+                            <td class="text-right">-</td>
+                            <td class="text-right">$2,400</td>
+                            <td class="text-right">$2,600</td>
+                            <td class="text-right">$2,550</td>
+                        </tr>
+                        <tr class="level-2 row-cu052">
+                            <td>Asia Supply</td>
+                            <td class="text-right">-</td>
+                            <td class="text-right">$2,550</td>
+                            <td class="text-right">$2,750</td>
+                            <td class="text-right">$2,650</td>
+                        </tr>
+                        <tr class="level-2 row-cu052">
+                            <td>Industrial Chem</td>
+                            <td class="text-right">-</td>
+                            <td class="text-right">$2,500</td>
+                            <td class="text-right">$2,700</td>
+                            <td class="text-right">$2,660</td>
+                        </tr>
+
+                        <!-- Material: PVC Resin -->
+                        <tr class="level-1" onclick="toggleRow('row-pl991', this)">
+                            <td><span class="expand-icon"><i class="ph-bold ph-caret-right"></i></span> PVC Resin
+                                (PL-991)</td>
+                            <td class="text-right">2</td>
+                            <td class="text-right">$850</td>
+                            <td class="text-right">$920</td>
+                            <td class="text-right" style="font-weight: 600; color: var(--accent);">$880 <span
+                                    style="font-size: 11px; color: var(--success); margin-left: 4px;"><i
+                                        class="ph-bold ph-trend-down"></i> -6%</span></td>
+                        </tr>
+                        <tr class="level-2 row-pl991">
+                            <td>Plastico Inc</td>
+                            <td class="text-right">-</td>
+                            <td class="text-right">$850</td>
+                            <td class="text-right">$900</td>
+                            <td class="text-right">$870</td>
+                        </tr>
+                        <tr class="level-2 row-pl991">
+                            <td>Asia Supply</td>
+                            <td class="text-right">-</td>
+                            <td class="text-right">$880</td>
+                            <td class="text-right">$920</td>
+                            <td class="text-right">$890</td>
+                        </tr>
+
+                        <!-- Material: Steel Pipe -->
+                        <tr class="level-1" onclick="toggleRow('row-st110', this)">
+                            <td><span class="expand-icon"><i class="ph-bold ph-caret-right"></i></span> Steel Pipe 10x
+                                (ST-110)</td>
+                            <td class="text-right">3</td>
+                            <td class="text-right">$420</td>
+                            <td class="text-right">$580</td>
+                            <td class="text-right" style="font-weight: 600; color: var(--accent);">$510 <span
+                                    style="font-size: 11px; color: var(--success); margin-left: 4px;"><i
+                                        class="ph-bold ph-trend-down"></i> -11%</span></td>
+                        </tr>
+                        <tr class="level-2 row-st110">
+                            <td>EuroMat Ltd</td>
+                            <td class="text-right">-</td>
+                            <td class="text-right">$420</td>
+                            <td class="text-right">$500</td>
+                            <td class="text-right">$480</td>
+                        </tr>
+                        <tr class="level-2 row-st110">
+                            <td>Global Metal Corp</td>
+                            <td class="text-right">-</td>
+                            <td class="text-right">$450</td>
+                            <td class="text-right">$550</td>
+                            <td class="text-right">$520</td>
+                        </tr>
+                        <tr class="level-2 row-st110">
+                            <td>Apex Supply</td>
+                            <td class="text-right">-</td>
+                            <td class="text-right">$480</td>
+                            <td class="text-right">$580</td>
+                            <td class="text-right">$530</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+
+        <!-- PAGE 2: MATERIAL DETAIL -->
+        <div id="page2" class="page-container">
+
+            <!-- Material Selection Area -->
+            <div class="card"
+                style="margin-bottom: 24px; padding: 16px 20px; background-color: var(--sidebar-bg); color: white;">
+                <div style="display: flex; align-items: center; justify-content: space-between;">
+                    <div style="display: flex; align-items: center; gap: 16px;">
+                        <i class="ph-fill ph-target" style="font-size: 32px; color: var(--accent);"></i>
+                        <div>
+                            <div
+                                style="font-size: 12px; color: rgba(255,255,255,0.7); text-transform: uppercase; letter-spacing: 1px;">
+                                Selected Material (Drill-down)</div>
+                            <div style="font-size: 24px; font-weight: 600;">Aluminum Grade A (AL-001)</div>
+                        </div>
+                    </div>
+                    <div style="display: flex; gap: 12px;">
+                        <select class="filter-select"
+                            style="background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.2); color: white;">
+                            <option>AL-001 - Aluminum Grade A</option>
+                            <option>CU-052 - Copper Wire</option>
+                            <option>PL-991 - PVC Resin</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="kpi-grid-4">
+                <div class="card kpi-card" style="--accent: var(--warning)">
+                    <div class="kpi-title">Số NCC chào giá</div>
+                    <div class="kpi-value">4 <span
+                            style="font-size: 14px; font-weight: normal; color: var(--text-secondary)">Suppliers</span>
+                    </div>
+                </div>
+
+                <div class="card kpi-card" style="--accent: var(--success)">
+                    <div class="kpi-title">Giá thấp nhất (Min)</div>
+                    <div class="kpi-value">$1,200 <span
+                            style="font-size: 14px; font-weight: normal; color: var(--text-secondary)">/ MT</span></div>
+                    <div class="kpi-trend trend-down" style="color: var(--text-secondary)">
+                        <span>By Global Metal Corp</span>
+                    </div>
+                </div>
+
+                <div class="card kpi-card" style="--accent: var(--danger)">
+                    <div class="kpi-title">Giá cao nhất (Max)</div>
+                    <div class="kpi-value">$1,450 <span
+                            style="font-size: 14px; font-weight: normal; color: var(--text-secondary)">/ MT</span></div>
+                    <div class="kpi-trend trend-down" style="color: var(--text-secondary)">
+                        <span>By Apex Supply Ltd</span>
+                    </div>
+                </div>
+
+                <div class="card kpi-card" style="--accent: #8e24aa">
+                    <div class="kpi-title">Giá trung bình & Spread</div>
+                    <div style="display: flex; justify-content: space-between; align-items: flex-end;">
+                        <div class="kpi-value">$1,310</div>
+                        <div style="text-align: right;">
+                            <div style="font-size: 12px; color: var(--text-secondary);">Spread (Max-Min/Min)</div>
+                            <div style="font-size: 16px; font-weight: 600; color: var(--danger);">20.8%</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+
+            <div class="charts-grid-half">
+                <div class="card">
+                    <div class="chart-header">
+                        <div class="chart-title">So sánh giá hiện tại giữa các Nhà cung cấp</div>
+                    </div>
+                    <div id="chartSupplierComparison" class="chart-container"></div>
+                </div>
+
+                <div class="card">
+                    <div class="chart-header">
+                        <div class="chart-title">Xu hướng giá trong 6 tháng qua (T10/25 - T3/26)</div>
+                    </div>
+                    <div id="chartPriceTrend" class="chart-container"></div>
+                </div>
+            </div>
+
+            <div class="charts-grid-half">
+                <div class="card">
+                    <div class="chart-header">
+                        <div class="chart-title">So sánh Điều kiện giao hàng (Leadtime & MOQ)</div>
+                    </div>
+                    <div id="chartLeadtimeMoq" class="chart-container small"></div>
+                </div>
+
+                <div class="card">
+                    <div class="chart-header">
+                        <div class="chart-title">Thị phần Nhập hàng thực tế (Sản lượng mua 6T qua)</div>
+                    </div>
+                    <div id="chartMarketShare" class="chart-container small"></div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <script>
+        // Matrix Toggle Logic
+        function toggleRow(className, element) {
+            element.classList.toggle('expanded');
+            const rows = document.querySelectorAll('.' + className);
+            rows.forEach(row => {
+                row.classList.toggle('show');
+            });
+        }
+
+        // Page Navigation Logic
+        function switchPage(pageId, navElement) {
+            // Update nav styles
+            document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+            navElement.classList.add('active');
+
+            // Hide all pages
+            document.querySelectorAll('.page-container').forEach(el => {
+                el.classList.remove('active');
+            });
+
+            // Show selected page
+            document.getElementById(pageId).classList.add('active');
+
+            // Update Header Title
+            const titles = {
+                'page1': 'Procurement Price Overview',
+                'page2': 'Material Price Analysis'
+            };
+            document.getElementById('pageTitle').innerText = titles[pageId];
+
+            // Re-render charts to fix width issues if container was hidden
+            window.dispatchEvent(new Event('resize'));
+        }
+
+        // Common Chart Options
+        const commonOptions = {
+            fontFamily: 'Inter, sans-serif',
+            toolbar: { show: false },
+            animations: {
+                enabled: true,
+                easing: 'easeinout',
+                speed: 800,
+                dynamicAnimation: { enabled: true, speed: 350 }
+            }
+        };
+
+        // --- PAGE 1 CHARTS ---
+
+        // 1. Phân bố số NCC trên mỗi NVL
+        var optionsSupplierDist = {
+            series: [15, 30, 109],
+            labels: ['1 Nhà Cung Cấp', '2 Nhà Cung Cấp', '≥ 3 Nhà Cung Cấp'],
+            chart: {
+                type: 'donut',
+                height: 300,
+                ...commonOptions
+            },
+            colors: ['#d13438', '#ffaa44', '#107c10'],
+            plotOptions: {
+                pie: {
+                    donut: {
+                        size: '70%',
+                        labels: {
+                            show: true,
+                            name: { fontSize: '12px' },
+                            value: { fontSize: '24px', fontWeight: 600, color: '#323130' },
+                            total: { show: true, label: 'Tổng số NVL', color: '#605e5c' }
+                        }
+                    }
+                }
+            },
+            dataLabels: { enabled: false },
+            legend: { position: 'bottom' },
+            stroke: { show: false }
+        };
+        new ApexCharts(document.querySelector("#chartSupplierDistribution"), optionsSupplierDist).render();
+
+        // 2. Top Nhà cung cấp có nhiều báo giá nhất
+        var optionsTopSuppliers = {
+            series: [{ name: 'Số lượng NVL báo giá', data: [45, 38, 32, 28, 25, 20] }],
+            chart: { type: 'bar', height: 300, ...commonOptions },
+            plotOptions: {
+                bar: {
+                    horizontal: true,
+                    borderRadius: 4,
+                    barHeight: '50%',
+                    distributed: true
+                }
+            },
+            colors: ['#118dff', '#0078d4', '#ffaa44', '#107c10', '#8e24aa', '#c8c6c4'],
+            dataLabels: {
+                enabled: true,
+                textAnchor: 'start',
+                style: { colors: ['#323130'], fontSize: '12px' },
+                offsetX: 10,
+                formatter: function (val) { return val + " NVL" }
+            },
+            legend: { show: false },
+            xaxis: {
+                categories: ['Global Metal Corp', 'Asia Supply', 'EuroMat Ltd', 'Industrial Chem', 'Apex Supply', 'Plastico Inc'],
+                title: { text: "Số lượng NVL", style: { color: '#605e5c', fontWeight: 500, fontSize: '11px' } }
+            },
+            yaxis: { labels: { style: { fontWeight: 500, fontSize: '12px' } } }
+        };
+        new ApexCharts(document.querySelector("#chartTopSuppliers"), optionsTopSuppliers).render();
+
+        // 3. Biến động giá v/v tháng trước
+        var optionsPriceStatus = {
+            series: [{ name: 'Số lượng NVL', data: [25, 60, 69] }],
+            chart: {
+                type: 'bar',
+                height: 250,
+                ...commonOptions
+            },
+            plotOptions: {
+                bar: {
+                    columnWidth: '50%',
+                    distributed: true,
+                    borderRadius: 4
+                }
+            },
+            colors: ['#d13438', '#107c10', '#c8c6c4'],
+            dataLabels: { enabled: true, style: { colors: ['#fff'] } },
+            legend: { show: false },
+            xaxis: {
+                categories: ['Tăng giá', 'Giảm giá', 'Không đổi'],
+                labels: { style: { fontSize: '12px' } }
+            }
+        };
+        new ApexCharts(document.querySelector("#chartPriceStatus"), optionsPriceStatus).render();
+
+        // 4. Top Tăng giá
+        var optionsTopIncrease = {
+            series: [{ name: '% Tăng', data: [15.2, 12.5, 9.8, 8.4, 7.1] }],
+            chart: { type: 'bar', height: 250, ...commonOptions },
+            plotOptions: { bar: { horizontal: true, borderRadius: 4, barHeight: '60%' } },
+            colors: ['#d13438'],
+            dataLabels: { enabled: true, textAnchor: 'start', style: { colors: ['#fff'] }, formatter: function (val, opt) { return "+" + val + "%" }, offsetX: 0 },
+            xaxis: { categories: ['Copper Wire', 'Resin V2', 'Lithium', 'Steel Pipe', 'Nickel'], labels: { show: false } },
+            yaxis: { labels: { style: { fontWeight: 500 } } }
+        };
+        new ApexCharts(document.querySelector("#chartTopIncrease"), optionsTopIncrease).render();
+
+        // 5. Top Giảm giá
+        var optionsTopDecrease = {
+            series: [{ name: '% Giảm', data: [-18.5, -14.2, -11.0, -9.5, -6.8] }],
+            chart: { type: 'bar', height: 250, ...commonOptions },
+            plotOptions: { bar: { horizontal: true, borderRadius: 4, barHeight: '60%' } },
+            colors: ['#107c10'],
+            dataLabels: { enabled: true, textAnchor: 'end', style: { colors: ['#fff'] }, formatter: function (val, opt) { return val + "%" }, offsetX: 0 },
+            xaxis: { categories: ['Aluminum', 'Rubber B', 'Pine Wood', 'Zinc', 'Glass'], labels: { show: false }, min: -20, max: 0 },
+            yaxis: { labels: { style: { fontWeight: 500 } }, opposite: true }
+        };
+        new ApexCharts(document.querySelector("#chartTopDecrease"), optionsTopDecrease).render();
+
+
+        // --- PAGE 2 CHARTS ---
+
+        // 1. So sánh giá hiện tại giữa các NCC
+        var optionsSupplierComp = {
+            series: [{ name: 'Offer Price (USD/MT)', data: [1200, 1250, 1340, 1450] }],
+            chart: { type: 'bar', height: 280, ...commonOptions },
+            plotOptions: {
+                bar: {
+                    distributed: true,
+                    columnWidth: '40%',
+                    borderRadius: 4,
+                    dataLabels: { position: 'top' }
+                }
+            },
+            colors: ['#107c10', '#118dff', '#ffaa44', '#d13438'], // Min to Max coloring
+            dataLabels: {
+                enabled: true,
+                formatter: function (val) { return "$" + val; },
+                offsetY: -20,
+                style: { fontSize: '13px', colors: ["#323130"] }
+            },
+            legend: { show: false },
+            xaxis: {
+                categories: ['Global Metal Corp', 'Asia Supply', 'EuroMat Ltd', 'Apex Supply'],
+                labels: { style: { fontWeight: 500, fontSize: '12px' } }
+            },
+            yaxis: { title: { text: "Price (USD)" }, min: 1000 }
+        };
+        new ApexCharts(document.querySelector("#chartSupplierComparison"), optionsSupplierComp).render();
+
+        // 2. Xu hướng giá (Line chart)
+        var optionsPriceTrend = {
+            series: [
+                { name: 'Global Metal Corp', data: [1350, 1320, 1280, 1260, 1230, 1200] },
+                { name: 'Asia Supply', data: [1360, 1340, 1300, 1280, 1260, 1250] },
+                { name: 'EuroMat Ltd', data: [1420, 1400, 1380, 1350, 1340, 1340] },
+                { name: 'Apex Supply', data: [1480, 1470, 1450, 1460, 1450, 1450] }
+            ],
+            chart: { type: 'line', height: 280, ...commonOptions },
+            stroke: { width: 3, curve: 'smooth' },
+            colors: ['#107c10', '#118dff', '#ffaa44', '#d13438'],
+            xaxis: { categories: ['Oct 25', 'Nov 25', 'Dec 25', 'Jan 26', 'Feb 26', 'Mar 26'] },
+            yaxis: { title: { text: 'Price (USD/MT)' }, min: 1150 },
+            legend: { position: 'bottom' },
+            markers: { size: 4 }
+        };
+        new ApexCharts(document.querySelector("#chartPriceTrend"), optionsPriceTrend).render();
+
+        // 3. Leadtime & MOQ Comparison
+        var optionsLeadtimeMoq = {
+            series: [{
+                name: 'Leadtime (Ngày)',
+                type: 'column',
+                data: [15, 25, 10, 30]
+            }, {
+                name: 'MOQ (Tấn)',
+                type: 'line',
+                data: [5, 10, 20, 5]
+            }],
+            chart: { type: 'line', height: 250, ...commonOptions },
+            stroke: { width: [0, 3], curve: 'smooth' },
+            colors: ['#118dff', '#ffaa44'],
+            plotOptions: { bar: { columnWidth: '35%', borderRadius: 4 } },
+            dataLabels: {
+                enabled: true,
+                enabledOnSeries: [0],
+                style: { colors: ['#323130'] },
+                background: { enabled: false }
+            },
+            labels: ['Global Metal Corp', 'Asia Supply', 'EuroMat Ltd', 'Apex Supply'],
+            yaxis: [
+                { title: { text: 'Leadtime (Ngày)' }, min: 0 },
+                { opposite: true, title: { text: 'MOQ (Tấn)' }, min: 0 }
+            ],
+            legend: { position: 'top' }
+        };
+        new ApexCharts(document.querySelector("#chartLeadtimeMoq"), optionsLeadtimeMoq).render();
+
+        // 4. Thị phần mua hàng (Order Volume Allocation)
+        var optionsMarketShare = {
+            series: [60, 25, 15, 0],
+            labels: ['Global Metal Corp', 'Asia Supply', 'EuroMat Ltd', 'Apex Supply'],
+            chart: { type: 'donut', height: 250, ...commonOptions },
+            colors: ['#107c10', '#118dff', '#ffaa44', '#c8c6c4'],
+            plotOptions: {
+                pie: {
+                    donut: {
+                        size: '65%',
+                        labels: {
+                            show: true,
+                            name: { fontSize: '11px' },
+                            value: { fontSize: '18px', fontWeight: 600, color: '#323130', formatter: function (val) { return val + "%" } },
+                            total: { show: true, label: 'Thị phần', formatter: function (w) { return "100%" } }
+                        }
+                    }
+                }
+            },
+            dataLabels: { enabled: false },
+            legend: { position: 'right', fontSize: '12px' },
+            stroke: { show: false }
+        };
+        new ApexCharts(document.querySelector("#chartMarketShare"), optionsMarketShare).render();
+
+    </script>
+</body>
+
+</html>
