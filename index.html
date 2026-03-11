@@ -828,10 +828,10 @@
 
         </div>
 
-        <!-- PAGE 2: MATERIAL DETAIL -->
+        <!-- PAGE 2: QUOTE TRACKING -->
         <div id="page2" class="page-container">
 
-            <!-- Material Selection Area -->
+            <!-- Filter Area -->
             <div class="card"
                 style="margin-bottom: 24px; padding: 16px 20px; background-color: var(--sidebar-bg); color: white;">
                 <div style="display: flex; align-items: center; justify-content: space-between;">
@@ -840,11 +840,17 @@
                         <div>
                             <div
                                 style="font-size: 12px; color: rgba(255,255,255,0.7); text-transform: uppercase; letter-spacing: 1px;">
-                                Selected Material (Drill-down)</div>
+                                Selected Order Target</div>
                             <div style="font-size: 24px; font-weight: 600;">Aluminum Grade A (AL-001)</div>
                         </div>
                     </div>
                     <div style="display: flex; gap: 12px;">
+                        <select class="filter-select"
+                            style="background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.2); color: white;">
+                            <option>Tháng hàng về: T5/2026</option>
+                            <option>Tháng hàng về: T6/2026</option>
+                            <option>Tháng hàng về: T7/2026</option>
+                        </select>
                         <select class="filter-select"
                             style="background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.2); color: white;">
                             <option>AL-001 - Aluminum Grade A</option>
@@ -855,75 +861,75 @@
                 </div>
             </div>
 
-            <div class="kpi-grid-4">
+            <div class="kpi-grid-4" style="margin-bottom: 24px;">
                 <div class="card kpi-card" style="--accent: var(--warning)">
-                    <div class="kpi-title">Số NCC chào giá</div>
-                    <div class="kpi-value">4 <span
-                            style="font-size: 14px; font-weight: normal; color: var(--text-secondary)">Suppliers</span>
+                    <div class="kpi-title">Giá Thấp nhất: Nước Ngoài (CNF)</div>
+                    <div class="kpi-value">$1,190 <span
+                            style="font-size: 14px; font-weight: normal; color: var(--text-secondary)">/ MT</span></div>
+                    <div class="kpi-trend trend-down">
+                        <i class="ph-bold ph-trend-down"></i>
+                        <span>-3.2% so với cùng kỳ T5/2025</span>
+                    </div>
+                </div>
+
+                <div class="card kpi-card" style="--accent: var(--warning)">
+                    <div class="kpi-title">Giá Thấp nhất: Nội Địa</div>
+                    <div class="kpi-value">$1,230 <span
+                            style="font-size: 14px; font-weight: normal; color: var(--text-secondary)">/ MT</span></div>
+                    <div class="kpi-trend trend-down">
+                        <i class="ph-bold ph-trend-down"></i>
+                        <span>-1.6% so với cùng kỳ T5/2025</span>
                     </div>
                 </div>
 
                 <div class="card kpi-card" style="--accent: var(--success)">
-                    <div class="kpi-title">Giá thấp nhất (Min)</div>
-                    <div class="kpi-value">$1,200 <span
+                    <div class="kpi-title">Spread (Chênh lệch Min Ngoại - Nội)</div>
+                    <div class="kpi-value">-$40 <span
                             style="font-size: 14px; font-weight: normal; color: var(--text-secondary)">/ MT</span></div>
                     <div class="kpi-trend trend-down" style="color: var(--text-secondary)">
-                        <span>By Global Metal Corp</span>
+                        <span>Nước ngoài đang có lợi thế</span>
                     </div>
                 </div>
 
-                <div class="card kpi-card" style="--accent: var(--danger)">
-                    <div class="kpi-title">Giá cao nhất (Max)</div>
-                    <div class="kpi-value">$1,450 <span
-                            style="font-size: 14px; font-weight: normal; color: var(--text-secondary)">/ MT</span></div>
-                    <div class="kpi-trend trend-down" style="color: var(--text-secondary)">
-                        <span>By Apex Supply Ltd</span>
+                <div class="card kpi-card" style="--accent: var(--accent)">
+                    <div class="kpi-title">Mục tiêu chốt Deal (Landed Cost)</div>
+                    <div class="kpi-value" id="dynamicTargetPrice" style="color: var(--accent);">$1,240</div>
+                    <div class="kpi-trend trend-up-bad" id="dynamicTargetTrend">
+                        <i class="ph-bold ph-trend-up" id="dynamicTargetTrendIcon"></i>
+                        <span id="dynamicTargetTrendText">+0.8% so với cùng kỳ T5/2025</span>
                     </div>
-                </div>
-
-                <div class="card kpi-card" style="--accent: #8e24aa">
-                    <div class="kpi-title">Giá trung bình & Spread</div>
-                    <div style="display: flex; justify-content: space-between; align-items: flex-end;">
-                        <div class="kpi-value">$1,310</div>
-                        <div style="text-align: right;">
-                            <div style="font-size: 12px; color: var(--text-secondary);">Spread (Max-Min/Min)</div>
-                            <div style="font-size: 16px; font-weight: 600; color: var(--danger);">20.8%</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-
-
-            <div class="charts-grid-half">
-                <div class="card">
-                    <div class="chart-header">
-                        <div class="chart-title">So sánh giá hiện tại giữa các Nhà cung cấp</div>
-                    </div>
-                    <div id="chartSupplierComparison" class="chart-container"></div>
-                </div>
-
-                <div class="card">
-                    <div class="chart-header">
-                        <div class="chart-title">Xu hướng giá trong 6 tháng qua (T10/25 - T3/26)</div>
-                    </div>
-                    <div id="chartPriceTrend" class="chart-container"></div>
                 </div>
             </div>
 
             <div class="charts-grid-half">
                 <div class="card">
                     <div class="chart-header">
-                        <div class="chart-title">So sánh Điều kiện giao hàng (Leadtime & MOQ)</div>
+                        <div class="chart-title">Giá báo chạm đáy theo ngày (CNF Nước ngoài - USD/MT)</div>
                     </div>
-                    <div id="chartLeadtimeMoq" class="chart-container small"></div>
+                    <div id="chartForeignQuotes" class="chart-container"></div>
                 </div>
 
                 <div class="card">
                     <div class="chart-header">
-                        <div class="chart-title">Thị phần Nhập hàng thực tế (Sản lượng mua 6T qua)</div>
+                        <div class="chart-title">Giá báo chạm đáy theo ngày (Nội Địa - USD/MT)</div>
                     </div>
-                    <div id="chartMarketShare" class="chart-container small"></div>
+                    <div id="chartDomesticQuotes" class="chart-container"></div>
+                </div>
+            </div>
+
+            <div class="charts-grid-half">
+                <div class="card">
+                    <div class="chart-header">
+                        <div class="chart-title">So sánh Tổng Chi phí Landed Cost (Bao gồm + 50$ Logistics)</div>
+                    </div>
+                    <div id="chartLandedCost" class="chart-container"></div>
+                </div>
+
+                <div class="card">
+                    <div class="chart-header">
+                        <div class="chart-title">Lịch sử Giá các lô hàng về trước đây & Giá mục tiêu</div>
+                    </div>
+                    <div id="chartHistoricalLanded" class="chart-container"></div>
                 </div>
             </div>
 
@@ -1089,106 +1095,214 @@
 
         // --- PAGE 2 CHARTS ---
 
-        // 1. So sánh giá hiện tại giữa các NCC
-        var optionsSupplierComp = {
-            series: [{ name: 'Offer Price (USD/MT)', data: [1200, 1250, 1340, 1450] }],
-            chart: { type: 'bar', height: 280, ...commonOptions },
-            plotOptions: {
-                bar: {
-                    distributed: true,
-                    columnWidth: '40%',
-                    borderRadius: 4,
-                    dataLabels: { position: 'top' }
-                }
-            },
-            colors: ['#107c10', '#118dff', '#ffaa44', '#d13438'], // Min to Max coloring
-            dataLabels: {
-                enabled: true,
-                formatter: function (val) { return "$" + val; },
-                offsetY: -20,
-                style: { fontSize: '13px', colors: ["#323130"] }
-            },
-            legend: { show: false },
-            xaxis: {
-                categories: ['Global Metal Corp', 'Asia Supply', 'EuroMat Ltd', 'Apex Supply'],
-                labels: { style: { fontWeight: 500, fontSize: '12px' } }
-            },
-            yaxis: { title: { text: "Price (USD)" }, min: 1000 }
+        // Custom Tooltip for Quote Lines
+        const customQuoteTooltip = function ({ series, seriesIndex, dataPointIndex, w }) {
+            var data = w.config.series[seriesIndex].data[dataPointIndex];
+            if (!data.quotes) return '';
+            var sorted = [...data.quotes].sort((a, b) => a.price - b.price);
+            var html = `<div style="padding:12px; font-family:Inter; min-width: 180px;">`;
+            html += `<div style="font-weight:600; font-size:12px; color:var(--text-secondary); margin-bottom:8px; padding-bottom:6px; border-bottom:1px solid #eee;">Ngày cập nhật: ${data.x}</div>`;
+            sorted.forEach(q => {
+                let isMin = q.price === data.y;
+                html += `<div style="display:flex; justify-content:space-between; margin-bottom:6px; font-size:13px; ${isMin ? 'font-weight:700; color:var(--accent);' : 'color:var(--text-primary);'}">
+                            <span>${q.name}</span>
+                            <span>$${q.price}</span>
+                         </div>`;
+            });
+            html += `</div>`;
+            return html;
         };
-        new ApexCharts(document.querySelector("#chartSupplierComparison"), optionsSupplierComp).render();
 
-        // 2. Xu hướng giá (Line chart)
-        var optionsPriceTrend = {
-            series: [
-                { name: 'Global Metal Corp', data: [1350, 1320, 1280, 1260, 1230, 1200] },
-                { name: 'Asia Supply', data: [1360, 1340, 1300, 1280, 1260, 1250] },
-                { name: 'EuroMat Ltd', data: [1420, 1400, 1380, 1350, 1340, 1340] },
-                { name: 'Apex Supply', data: [1480, 1470, 1450, 1460, 1450, 1450] }
-            ],
-            chart: { type: 'line', height: 280, ...commonOptions },
-            stroke: { width: 3, curve: 'smooth' },
-            colors: ['#107c10', '#118dff', '#ffaa44', '#d13438'],
-            xaxis: { categories: ['Oct 25', 'Nov 25', 'Dec 25', 'Jan 26', 'Feb 26', 'Mar 26'] },
-            yaxis: { title: { text: 'Price (USD/MT)' }, min: 1150 },
-            legend: { position: 'bottom' },
-            markers: { size: 4 }
-        };
-        new ApexCharts(document.querySelector("#chartPriceTrend"), optionsPriceTrend).render();
-
-        // 3. Leadtime & MOQ Comparison
-        var optionsLeadtimeMoq = {
+        // 1. Foreign Quotes Line Chart
+        var optionsForeignQuotes = {
             series: [{
-                name: 'Leadtime (Ngày)',
-                type: 'column',
-                data: [15, 25, 10, 30]
-            }, {
-                name: 'MOQ (Tấn)',
-                type: 'line',
-                data: [5, 10, 20, 5]
+                name: 'Min Price',
+                data: [
+                    { x: '01/03', y: 1250, quotes: [{ name: 'Global Metal', price: 1250 }, { name: 'Asia Supply', price: 1270 }, { name: 'EuroMat', price: 1300 }] },
+                    { x: '03/03', y: 1240, quotes: [{ name: 'Global Metal', price: 1260 }, { name: 'EuroMat', price: 1240 }] },
+                    { x: '05/03', y: 1220, quotes: [{ name: 'Asia Supply', price: 1220 }, { name: 'Global Metal', price: 1240 }, { name: 'EuroMat', price: 1250 }] },
+                    { x: '08/03', y: 1220, quotes: [{ name: 'EuroMat', price: 1220 }] },
+                    { x: '10/03', y: 1190, quotes: [{ name: 'Global Metal', price: 1190 }, { name: 'Asia Supply', price: 1210 }, { name: 'EuroMat', price: 1210 }] }
+                ]
             }],
-            chart: { type: 'line', height: 250, ...commonOptions },
-            stroke: { width: [0, 3], curve: 'smooth' },
-            colors: ['#118dff', '#ffaa44'],
-            plotOptions: { bar: { columnWidth: '35%', borderRadius: 4 } },
-            dataLabels: {
-                enabled: true,
-                enabledOnSeries: [0],
-                style: { colors: ['#323130'] },
-                background: { enabled: false }
+            chart: { type: 'line', height: 280, ...commonOptions },
+            stroke: { width: 3, curve: 'straight' },
+            colors: ['#d13438'],
+            markers: { size: 6, hover: { sizeOffset: 2 } },
+            dataLabels: { enabled: true, offsetY: -10, background: { enabled: false }, style: { colors: ['#d13438'] } },
+            xaxis: {
+                type: 'category',
+                labels: { style: { fontWeight: 500 } }
             },
-            labels: ['Global Metal Corp', 'Asia Supply', 'EuroMat Ltd', 'Apex Supply'],
-            yaxis: [
-                { title: { text: 'Leadtime (Ngày)' }, min: 0 },
-                { opposite: true, title: { text: 'MOQ (Tấn)' }, min: 0 }
-            ],
-            legend: { position: 'top' }
+            yaxis: { min: 1150, title: { text: "Price (USD/MT)" } },
+            tooltip: { custom: customQuoteTooltip }
         };
-        new ApexCharts(document.querySelector("#chartLeadtimeMoq"), optionsLeadtimeMoq).render();
+        new ApexCharts(document.querySelector("#chartForeignQuotes"), optionsForeignQuotes).render();
 
-        // 4. Thị phần mua hàng (Order Volume Allocation)
-        var optionsMarketShare = {
-            series: [60, 25, 15, 0],
-            labels: ['Global Metal Corp', 'Asia Supply', 'EuroMat Ltd', 'Apex Supply'],
-            chart: { type: 'donut', height: 250, ...commonOptions },
-            colors: ['#107c10', '#118dff', '#ffaa44', '#c8c6c4'],
-            plotOptions: {
-                pie: {
-                    donut: {
-                        size: '65%',
-                        labels: {
-                            show: true,
-                            name: { fontSize: '11px' },
-                            value: { fontSize: '18px', fontWeight: 600, color: '#323130', formatter: function (val) { return val + "%" } },
-                            total: { show: true, label: 'Thị phần', formatter: function (w) { return "100%" } }
-                        }
+        // 2. Domestic Quotes Line Chart
+        var optionsDomesticQuotes = {
+            series: [{
+                name: 'Min Price',
+                data: [
+                    { x: '01/03', y: 1280, quotes: [{ name: 'VN Steel', price: 1280 }, { name: 'Hòa Phát', price: 1300 }] },
+                    { x: '02/03', y: 1280, quotes: [{ name: 'VN Steel', price: 1280 }] },
+                    { x: '04/03', y: 1270, quotes: [{ name: 'VN Steel', price: 1270 }, { name: 'Thái Nguyên', price: 1290 }] },
+                    { x: '07/03', y: 1240, quotes: [{ name: 'Hòa Phát', price: 1240 }, { name: 'VN Steel', price: 1260 }] },
+                    { x: '10/03', y: 1230, quotes: [{ name: 'VN Steel', price: 1230 }, { name: 'Hòa Phát', price: 1240 }, { name: 'Thái Nguyên', price: 1250 }] }
+                ]
+            }],
+            chart: { type: 'line', height: 280, ...commonOptions },
+            stroke: { width: 3, curve: 'straight' },
+            colors: ['#107c10'],
+            markers: { size: 6, hover: { sizeOffset: 2 } },
+            dataLabels: { enabled: true, offsetY: -10, background: { enabled: false }, style: { colors: ['#107c10'] } },
+            xaxis: {
+                type: 'category',
+                labels: { style: { fontWeight: 500 } }
+            },
+            yaxis: { min: 1150, title: { text: "Price (USD/MT)" } },
+            tooltip: { custom: customQuoteTooltip }
+        };
+        new ApexCharts(document.querySelector("#chartDomesticQuotes"), optionsDomesticQuotes).render();
+
+        // 3. Landed Cost Bar Chart (Combo: Quotes + Min Landed Cost)
+        // Assumption: Foreign Shipping + Tax = $50, Domestic Shipping = $10
+        var optionsLandedCost = {
+            series: [{
+                name: 'Giá báo Nước ngoài (Min)',
+                type: 'column',
+                data: [1250, 0, 1240, 0, 1220, 0, 1220, 1190]
+            }, {
+                name: 'Giá báo Nội địa (Min)',
+                type: 'column',
+                data: [1280, 1280, 0, 1270, 0, 1240, 0, 1230]
+            }, {
+                name: 'Landed Cost (Tối ưu nhất)',
+                type: 'line',
+                data: [1300, 1330, 1290, 1320, 1270, 1290, 1270, 1240]
+            }],
+            chart: {
+                type: 'line',
+                height: 280,
+                ...commonOptions,
+                events: {
+                    markerClick: function (event, chartContext, { seriesIndex, dataPointIndex, config }) {
+                        var val = config.series[2].data[dataPointIndex];
+                        var date = config.xaxis.categories[dataPointIndex];
+                        if (val > 0) updateTargetLine(val, date);
+                    },
+                    dataPointSelection: function (event, chartContext, config) {
+                        var val = config.w.config.series[2].data[config.dataPointIndex];
+                        var date = config.w.config.xaxis.categories[config.dataPointIndex];
+                        if (val > 0) updateTargetLine(val, date);
                     }
                 }
             },
-            dataLabels: { enabled: false },
-            legend: { position: 'right', fontSize: '12px' },
-            stroke: { show: false }
+            stroke: { width: [0, 0, 3], curve: 'smooth' },
+            plotOptions: {
+                bar: { columnWidth: '60%', borderRadius: 4 }
+            },
+            colors: ['#d13438', '#107c10', '#118dff'],
+            dataLabels: {
+                enabled: true,
+                style: { colors: ['#118dff'], fontSize: '11px', fontWeight: 700 },
+                background: { enabled: true, foreColor: '#fff', padding: 4, borderRadius: 2, borderWidth: 1, borderColor: '#118dff' },
+                enabledOnSeries: [2],
+                formatter: function (val) { return "$" + val }
+            },
+            xaxis: {
+                categories: ['01/03', '02/03', '03/03', '04/03', '05/03', '07/03', '08/03', '10/03'],
+                labels: { style: { fontWeight: 500 } }
+            },
+            yaxis: { min: 1100, title: { text: "Price (USD/MT)" } },
+            legend: { position: 'top' },
+            tooltip: {
+                shared: true,
+                intersect: false,
+                y: { formatter: function (val) { return val === 0 ? "No Data" : "$" + val } }
+            }
         };
-        new ApexCharts(document.querySelector("#chartMarketShare"), optionsMarketShare).render();
+        new ApexCharts(document.querySelector("#chartLandedCost"), optionsLandedCost).render();
+
+        // 4. Historical Landed
+        var optionsHistoricalLanded = {
+            series: [
+                { name: 'Giá Max', type: 'line', data: [1400, 1420, 1380, 1450, 1410] },
+                { name: 'Giá Avg', type: 'line', data: [1280, 1310, 1290, 1340, 1320] },
+                { name: 'Giá Min', type: 'line', data: [1150, 1200, 1220, 1250, 1230] }
+            ],
+            chart: { type: 'line', height: 280, ...commonOptions },
+            stroke: { width: [2, 3, 2], curve: 'smooth', dashArray: [5, 0, 5] },
+            colors: ['#d13438', '#ffaa44', '#107c10'],
+            xaxis: {
+                categories: ['Tháng 5/2021', 'Tháng 5/2022', 'Tháng 5/2023', 'Tháng 5/2024', 'Tháng 5/2025']
+            },
+            yaxis: { min: 1100, title: { text: "Price (USD/MT)" } },
+            legend: { position: 'top' },
+            annotations: {
+                yaxis: [{
+                    y: 1240, // Best Landed Price 10/03
+                    borderColor: '#118dff',
+                    strokeDashArray: 0,
+                    label: {
+                        borderColor: '#118dff',
+                        style: { color: '#fff', background: '#118dff', fontWeight: 600 },
+                        text: 'Mục tiêu chốt Deal (10/03): $1,240'
+                    }
+                }]
+            }
+        };
+        var chartHistoricalObj = new ApexCharts(document.querySelector("#chartHistoricalLanded"), optionsHistoricalLanded);
+        chartHistoricalObj.render();
+
+        // Cross-chart Interactivity Logic
+        function updateTargetLine(val, date) {
+            // Update the Historical Chart Annotation Line
+            chartHistoricalObj.updateOptions({
+                annotations: {
+                    yaxis: [{
+                        y: val,
+                        borderColor: '#118dff',
+                        strokeDashArray: 0,
+                        label: {
+                            borderColor: '#118dff',
+                            style: { color: '#fff', background: '#118dff', fontWeight: 600, padding: { left: 8, right: 8, top: 4, bottom: 4 } },
+                            text: 'Mục tiêu chốt Deal (' + date + '): $' + val
+                        }
+                    }]
+                }
+            });
+
+            // Dynamically update KPI card
+            var priceElement = document.getElementById('dynamicTargetPrice');
+            if (priceElement) priceElement.innerText = '$' + val;
+
+            // Calculate percentage compared to same month last year (T5/2025: Baseline $1230)
+            var baselinePrice = 1230;
+            var diff = val - baselinePrice;
+            var percent = ((diff / baselinePrice) * 100).toFixed(1);
+
+            var trendContainer = document.getElementById('dynamicTargetTrend');
+            var trendIcon = document.getElementById('dynamicTargetTrendIcon');
+            var trendText = document.getElementById('dynamicTargetTrendText');
+
+            if (trendContainer && trendIcon && trendText) {
+                trendContainer.className = 'kpi-trend'; // reset
+                if (diff > 0) {
+                    trendContainer.classList.add('trend-up-bad'); // Price up = bad for procurement
+                    trendIcon.className = 'ph-bold ph-trend-up';
+                    trendText.innerText = '+' + percent + '% so với cùng kỳ T5/2025';
+                } else if (diff < 0) {
+                    trendContainer.classList.add('trend-down');   // Price down = good for procurement
+                    trendIcon.className = 'ph-bold ph-trend-down';
+                    trendText.innerText = percent + '% so với cùng kỳ T5/2025';
+                } else {
+                    trendContainer.classList.add('trend-neutral');
+                    trendIcon.className = 'ph-bold ph-minus';
+                    trendText.innerText = 'Bằng với cùng kỳ T5/2025';
+                }
+            }
+        }
 
     </script>
 </body>
