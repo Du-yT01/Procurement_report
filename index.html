@@ -508,13 +508,16 @@
             <h2>Procurement<br>Intelligence</h2>
         </div>
         <div class="nav-menu">
-            <div class="nav-item active" onclick="switchPage('page1', this)">
-                <i class="ph ph-squares-four"></i>
-                <span>Tổng quan giá NVL</span>
-            </div>
-            <div class="nav-item" onclick="switchPage('page2', this)">
+            <div class="nav-item active" onclick="switchPage('page2', this)">
                 <i class="ph ph-magnifying-glass-plus"></i>
                 <span>Phân tích chi tiết NVL</span>
+            </div>
+            <div class="nav-item" onclick="switchPage('page1', this)">
+                <i class="ph ph-squares-four"></i>
+                <div>
+                    <div>Tổng quan giá NVL</div>
+                    <div style="font-size: 11px; color: rgba(255,255,255,0.5); margin-top: 2px;">(Tham khảo thêm)</div>
+                </div>
             </div>
 
         </div>
@@ -528,7 +531,7 @@
     <main class="main-content">
         <!-- Global Header -->
         <header class="top-header">
-            <h1 class="page-title" id="pageTitle">Procurement Price Overview</h1>
+            <h1 class="page-title" id="pageTitle">Material Price Analysis</h1>
             <div class="filters">
                 <div class="filter-group">
                     <label>Tháng báo cáo:</label>
@@ -551,7 +554,7 @@
         </header>
 
         <!-- PAGE 1: OVERVIEW -->
-        <div id="page1" class="page-container active">
+        <div id="page1" class="page-container">
 
 
 
@@ -829,7 +832,7 @@
         </div>
 
         <!-- PAGE 2: QUOTE TRACKING -->
-        <div id="page2" class="page-container">
+        <div id="page2" class="page-container active">
 
             <!-- Filter Area -->
             <div class="card"
